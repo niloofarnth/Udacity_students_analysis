@@ -54,3 +54,5 @@ for row in project_submissions:
     row["completion_date"] = change_time_type(row["completion_date"])
   
     
+#find the total number of the rows in each file
+print(sum(1 for row in enrollments),sum(1 for row in daily_engagement),sum(1 for row in project_submissions))
