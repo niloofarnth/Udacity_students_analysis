@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 
 import unicodecsv
-from datetime import datetime
+from datetime import datetime as dt
+import datetime
 
 #to read the csv files as a dictionary
 def file_reader(file_name):
@@ -21,7 +22,7 @@ def change_time_type(date):
     if date == '':
         return None
     else: 
-        return datetime.strptime(date , '%Y-%m-%d')
+        return dt.strptime(date , '%Y-%m-%d')
     
 def change_number_type(number):
     if number == '':
@@ -124,8 +125,20 @@ for student in non_udacity_enrollments:
             paid_student[student["account_key"]] = student["join_date"]
 
 
-
+#find dates within one week of a date 
+def within_one_week(enrollment_date, engagement_date):
+    margin = datetime.timedelta(days = 7)
+    if enrollment_date <= engagement_date < enrollment_date + margin:
+        return True
         
+paid_engagement_in_first_week = []
+for engagement in non_udacity_engagements:
+    if engagement["account_key"] in paid_student.keys():
+        if within_one_week(paid_student[engagement["account_key"]] ,engagement["utc_date"]):
+            paid_engagement_in_first_week.append(engagement)
+            
+print (len(paid_engagement_in_first_week))
+            
         
           
             
