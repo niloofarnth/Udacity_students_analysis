@@ -81,3 +81,11 @@ for student in enrollment_unique_students:
         continue
 #print (not_in_engagement)
 
+    
+problem_students = []
+for student in not_in_engagement:
+    for row in enrollments:
+        if student == row["account_key"]:
+            if row["days_to_cancel"] != 0:
+                problem_students.append(row)
+print (problem_students)
