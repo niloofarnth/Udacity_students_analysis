@@ -63,7 +63,21 @@ def find_unique_students(table_name):
         unique_students.add(row["account_key"])
     return unique_students
         
-        
-enrollment_num_unique_students = len(find_unique_students(enrollments))
-engagement_num_unique_students = len(find_unique_students(daily_engagement))
-submission_num_unique_students= len(find_unique_students(project_submissions))
+
+enrollment_unique_students = find_unique_students(enrollments)
+engagement_unique_students = find_unique_students(daily_engagement)
+submission_unique_students= find_unique_students(project_submissions)
+
+enrollment_num_unique_students = len(enrollment_unique_students )
+engagement_num_unique_students = len(engagement_unique_students )
+submission_num_unique_students= len(submission_unique_students)
+
+#find the students who are in enrollment but not in engagement
+not_in_engagement = set()
+for student in enrollment_unique_students:
+    if student not in engagement_unique_students:
+        not_in_engagement.add(student)
+    else:
+        continue
+#print (not_in_engagement)
+
