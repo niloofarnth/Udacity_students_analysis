@@ -96,6 +96,21 @@ test_accounts = set()
 for student in enrollments:
     if student["is_udacity"]:
         test_accounts.add(student["account_key"])
-print (len(test_accounts))
+#print (test_accounts)
 
+#function to remove udacity test_accounts form the all tables
+def remove_test_accounts(table_name):
+    new_table = []
+    for student in table_name:
+        if student["account_key"] not in test_accounts:
+            new_table.append(student)
+    return new_table
+            
+non_udacity_enrollments = remove_test_accounts(enrollments)
+non_udacity_engagements = remove_test_accounts(daily_engagement)
+non_udacity_engagements = remove_test_accounts(project_submissions)
+
+
+            
+            
 
