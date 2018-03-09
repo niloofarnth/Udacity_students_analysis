@@ -1,9 +1,4 @@
 # -*- coding: utf-8 -*-
-"""
-Spyder Editor
-
-This is a temporary script file.
-"""
 
 import unicodecsv
 from datetime import datetime
@@ -41,13 +36,14 @@ for row in enrollments:
     row["days_to_cancel"] = change_number_type(row["days_to_cancel"])
     row["is_udacity"] = row["is_udacity"] == "True"
     row["is_canceled"] = row["is_canceled"] == "True"
-    
+
 for row in daily_engagement:
     row["utc_date"] = change_time_type(row["utc_date"])
     row["num_courses_visited"] = int(float(row["num_courses_visited"]))
     row["total_minutes_visited"] = float(row["total_minutes_visited"])
     row["lessons_completed"] = int(float(row["lessons_completed"]))
     row["projects_completed"] = int(float(row["projects_completed"]))
+    row["account_key"] = row.pop("acct")
     
 for row in project_submissions:
     row["creation_date"] = change_time_type(row["creation_date"])
@@ -55,4 +51,19 @@ for row in project_submissions:
   
     
 #find the total number of the rows in each file
-print(sum(1 for row in enrollments),sum(1 for row in daily_engagement),sum(1 for row in project_submissions))
+enrollment_num_rows = len(enrollments)
+engagement_num_rows = len(daily_engagement)
+submission_num_rows = len(project_submissions)
+
+
+#find unique students
+def find_unique_students(table_name):
+    unique_students= set()
+    for row in table_name:
+        unique_students.add(row["account_key"])
+    return unique_students
+        
+        
+enrollment_num_unique_students = len(find_unique_students(enrollments))
+engagement_num_unique_students = len(find_unique_students(daily_engagement))
+submission_num_unique_students= len(find_unique_students(project_submissions))
