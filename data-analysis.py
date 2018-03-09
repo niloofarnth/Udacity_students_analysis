@@ -106,11 +106,27 @@ def remove_test_accounts(table_name):
             new_table.append(student)
     return new_table
             
+#I will use these tables from now on
 non_udacity_enrollments = remove_test_accounts(enrollments)
 non_udacity_engagements = remove_test_accounts(daily_engagement)
-non_udacity_engagements = remove_test_accounts(project_submissions)
+non_udacity_submissions = remove_test_accounts(project_submissions)
 
 
-            
+#find the paid students in the enrollment table if they have not cancelled or 
+#have been enrolled more than 7 days
+paid_student = {}
+for student in non_udacity_enrollments:
+    if student["days_to_cancel"] == None or student["days_to_cancel"] >7:
+        if student["account_key"] not in paid_student.keys():
+            paid_student[student["account_key"]] = student["join_date"]
+#to make sure that the enrollment date is the most recent one
+        elif student["join_date"] > paid_student[student["account_key"]]:
+            paid_student[student["account_key"]] = student["join_date"]
+
+
+
+        
+        
+          
             
 
