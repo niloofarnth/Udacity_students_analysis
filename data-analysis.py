@@ -168,6 +168,16 @@ total_minutes_dict = (total_engagement_dicts(minutes_dict))
 total_lessons_dict = total_engagement_dicts(lesson_dict)
 
 
+def average_engagement(total_engagement_dict):
+    total = list(total_engagement_dict.values())
+    average = np.mean(total)
+    standard_dev = np.std(total)
+    minimum = np.min(total)
+    maximum = np.max(total)
+    
+    return ("%.2f"%average, "%.2f" %standard_dev, minimum, maximum)
+
+lessons_stats = average_engagement(total_lessons_dict)
 
 
             
