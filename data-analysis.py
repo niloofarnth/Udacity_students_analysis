@@ -3,6 +3,7 @@
 import unicodecsv
 from datetime import datetime as dt
 import datetime
+import numpy as np
 
 #to read the csv files as a dictionary
 def file_reader(file_name):
@@ -131,15 +132,36 @@ def within_one_week(enrollment_date, engagement_date):
     if enrollment_date <= engagement_date < enrollment_date + margin:
         return True
         
-paid_engagement_in_first_week = []
+paid_engagement_in_first_week = []  #data from engagement tabel for duration of one week 
+                                    # where the student was a paid student 
 for engagement in non_udacity_engagements:
     if engagement["account_key"] in paid_student.keys():
         if within_one_week(paid_student[engagement["account_key"]] ,engagement["utc_date"]):
             paid_engagement_in_first_week.append(engagement)
+#print (len(paid_engagement_in_first_week))
             
-print (len(paid_engagement_in_first_week))
             
-        
+#find average minutes spent in classroom during the first week of engagement
+#1. make a dictionary for finding the all the specific activity for a account_key, like total
+#or total minutes
+def engagement_dicts(list_name, column_in_engagement):
+    dict_name = {}
+    for key in paid_student.keys():
+        list_name = []
+        for engagement in paid_engagement_in_first_week:
+            if engagement["account_key"] == key:
+                list_name.append(engagement[column_in_engagement])
+        dict_name[key] = list_name
+    return dict_name
+    
+lesson_dict = engagement_dicts( "lessons", "lessons_completed")  
+minutes_dict = engagement_dicts( "minutes", "total_minutes_visited")
+
+
+
+
+            
+
           
             
 
