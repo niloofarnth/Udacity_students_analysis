@@ -4,6 +4,8 @@ import unicodecsv
 from datetime import datetime as dt
 import datetime
 import numpy as np
+import time
+start_time = time.time()
 
 #to read the csv files as a dictionary
 def file_reader(file_name):
@@ -125,7 +127,15 @@ for student in non_udacity_enrollments:
         elif student["join_date"] > paid_student[student["account_key"]]:
             paid_student[student["account_key"]] = student["join_date"]
 
-
+#add another column for the days that student has visited
+for account in non_udacity_engagements:
+    if account["num_courses_visited"]>0:
+        account["day_visited"] = 1
+    else:
+        account["day_visited"] = 0      
+        
+        
+        
 #find dates within one week of a date 
 def within_one_week(enrollment_date, engagement_date):
     margin = datetime.timedelta(days = 7)
@@ -140,11 +150,11 @@ for engagement in non_udacity_engagements:
             paid_engagement_in_first_week.append(engagement)
 #print (len(paid_engagement_in_first_week))
             
+      
             
-#find average minutes spent in classroom during the first week of engagement
-#1. make a dictionary for finding the all the specific activity for a account_key, like total
-#or total minutes
-def engagement_dicts(list_name, column_in_engagement):
+#find average minutes spent in classroom during the first week of engagement with 3 functions
+
+def engagement_dicts(column_in_engagement):
     dict_name = {}
     for key in paid_student.keys():
         list_name = []
@@ -154,8 +164,9 @@ def engagement_dicts(list_name, column_in_engagement):
         dict_name[key] = list_name
     return dict_name
     
-lesson_dict = engagement_dicts( "lessons", "lessons_completed")  
-minutes_dict = engagement_dicts( "minutes", "total_minutes_visited")
+lesson_dict = engagement_dicts( "lessons_completed")  
+minutes_dict = engagement_dicts( "total_minutes_visited")
+days_dict = engagement_dicts("day_visited")
 
 
 def total_engagement_dicts(dict_name):
@@ -164,9 +175,9 @@ def total_engagement_dicts(dict_name):
         total_dict_name[account_key]= sum(dict_name[account_key])
     return total_dict_name
 
-total_minutes_dict = (total_engagement_dicts(minutes_dict))
+total_minutes_dict = total_engagement_dicts(minutes_dict)
 total_lessons_dict = total_engagement_dicts(lesson_dict)
-
+total_days_dict = total_engagement_dicts(days_dict)
 
 def average_engagement(total_engagement_dict):
     total = list(total_engagement_dict.values())
@@ -175,13 +186,23 @@ def average_engagement(total_engagement_dict):
     minimum = np.min(total)
     maximum = np.max(total)
     
-    return ("%.2f"%average, "%.2f" %standard_dev, minimum, maximum)
+    return ("%.2f"%average, "%.2f" %standard_dev, "%.2f" % minimum, "%.2f"% maximum)
 
 lessons_stats = average_engagement(total_lessons_dict)
+minutes_stats = average_engagement(total_minutes_dict)
+days_stats = average_engagement(total_days_dict)
 
 
+
+
+
+
+        
+        
+        
             
 
           
             
 
+print ("My program took {} seconds to run".format(time.time() - start_time))
