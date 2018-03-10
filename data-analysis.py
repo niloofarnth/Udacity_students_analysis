@@ -158,6 +158,16 @@ lesson_dict = engagement_dicts( "lessons", "lessons_completed")
 minutes_dict = engagement_dicts( "minutes", "total_minutes_visited")
 
 
+def total_engagement_dicts(dict_name):
+    total_dict_name = {}
+    for account_key in dict_name.keys():
+        total_dict_name[account_key]= sum(dict_name[account_key])
+    return total_dict_name
+
+total_minutes_dict = (total_engagement_dicts(minutes_dict))
+total_lessons_dict = total_engagement_dicts(lesson_dict)
+
+
 
 
             
