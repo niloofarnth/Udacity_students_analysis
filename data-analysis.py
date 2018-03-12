@@ -148,47 +148,6 @@ for engagement in non_udacity_engagements:
             paid_engagement_in_first_week.append(engagement)
 #print (len(paid_engagement_in_first_week))
         
-    
-           
-#find average minutes spent in classroom during the first week of engagement with 3 functions
-def engagement_dicts(column_in_engagement):
-    dict_name = {}
-    for key in paid_student.keys():
-        list_name = []
-        for engagement in paid_engagement_in_first_week:
-            if engagement["account_key"] == key:
-                list_name.append(engagement[column_in_engagement])
-        dict_name[key] = list_name
-    return dict_name
-    
-lesson_dict = engagement_dicts( "lessons_completed")  
-minutes_dict = engagement_dicts( "total_minutes_visited")
-days_dict = engagement_dicts("day_visited")
-
-
-def total_engagement_dicts(dict_name):
-    total_dict_name = {}
-    for account_key in dict_name.keys():
-        total_dict_name[account_key]= sum(dict_name[account_key])
-    return total_dict_name
-
-total_minutes_dict = total_engagement_dicts(minutes_dict)
-total_lessons_dict = total_engagement_dicts(lesson_dict)
-total_days_dict = total_engagement_dicts(days_dict)
-
-def average_engagement(total_engagement_dict):
-    total = list(total_engagement_dict.values())
-    average = np.mean(total)
-    standard_dev = np.std(total)
-    minimum = np.min(total)
-    maximum = np.max(total)
-    return ("%.2f"%average, "%.2f" %standard_dev, "%.2f" % minimum, "%.2f"% maximum)
-
-lessons_stats = average_engagement(total_lessons_dict)
-minutes_stats = average_engagement(total_minutes_dict)
-days_stats = average_engagement(total_days_dict)
-
-    
 account_key_paid_first_week = set()
 for student in paid_engagement_in_first_week:
     account_key_paid_first_week.add(student["account_key"])
@@ -206,7 +165,42 @@ for engagement in paid_engagement_in_first_week:
     if engagement["account_key"] in passing_engagement_accounts:
         passing_engagement.append(engagement)
     elif engagement["account_key"] not in passing_engagement_accounts:
-        non_passing_engagement.append(engagement)
+        non_passing_engagement.append(engagement)  
+           
+#find average minutes spent in classroom during the first week of engagement with 3 functions
+def engagement_dicts(column_in_engagement, which_engagement):
+    dict_name = {}
+    for key in paid_student.keys():
+        list_name = []
+        for engagement in which_engagement:
+            if engagement["account_key"] == key:
+                list_name.append(engagement[column_in_engagement])
+        if len(list_name) > 0:
+            dict_name[key] = list_name
+    return dict_name
+
+def total_engagement_dicts(dict_name):
+    total_dict_name = {}
+    for account_key in dict_name.keys():
+        total_dict_name[account_key]= sum(dict_name[account_key])
+    return total_dict_name
+
+def average_engagement(total_engagement_dict):
+    total = list(total_engagement_dict.values())
+    average = np.mean(total)
+    standard_dev = np.std(total)
+    minimum = np.min(total)
+    maximum = np.max(total)
+    return ("%.2f"%average, "%.2f" %standard_dev, "%.2f" % minimum, "%.2f"% maximum)
+
+lessons_passed_stats = average_engagement(total_engagement_dicts(engagement_dicts("lessons_completed", passing_engagement)))
+lessons_nonpassed_stats = average_engagement(total_engagement_dicts(engagement_dicts("lessons_completed", non_passing_engagement)))
+minutes_stats = average_engagement(total_engagement_dicts(engagement_dicts("total_minutes_visited", paid_engagement_in_first_week)))
+days_stats = average_engagement(total_engagement_dicts(engagement_dicts("day_visited", paid_engagement_in_first_week)))
+lessons_passed_stats = average_engagement(total_engagement_dicts(engagement_dicts("lessons_completed", paid_engagement_in_first_week)))
+
+    
+
 
          
     
