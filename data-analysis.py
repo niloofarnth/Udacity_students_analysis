@@ -5,6 +5,8 @@ from datetime import datetime as dt
 import datetime
 import numpy as np
 import time
+import matplotlib.pyplot as plt
+import seaborn as sns
 start_time = time.time()
 
 #to read the csv files as a dictionary
@@ -193,27 +195,31 @@ def average_engagement(total_engagement_dict):
     maximum = np.max(total)
     return ("%.2f"%average, "%.2f" %standard_dev, "%.2f" % minimum, "%.2f"% maximum)
 
+minutes_passed_stats = average_engagement(total_engagement_dicts(engagement_dicts("total_minutes_visited", passing_engagement)))
+days_stats = average_engagement(total_engagement_dicts(engagement_dicts("day_visited", passing_engagement)))
 lessons_passed_stats = average_engagement(total_engagement_dicts(engagement_dicts("lessons_completed", passing_engagement)))
+minutes_nonpassed_stats = average_engagement(total_engagement_dicts(engagement_dicts("total_minutes_visited", non_passing_engagement)))
+days_stats = average_engagement(total_engagement_dicts(engagement_dicts("day_visited", non_passing_engagement)))
 lessons_nonpassed_stats = average_engagement(total_engagement_dicts(engagement_dicts("lessons_completed", non_passing_engagement)))
 minutes_stats = average_engagement(total_engagement_dicts(engagement_dicts("total_minutes_visited", paid_engagement_in_first_week)))
 days_stats = average_engagement(total_engagement_dicts(engagement_dicts("day_visited", paid_engagement_in_first_week)))
-lessons_passed_stats = average_engagement(total_engagement_dicts(engagement_dicts("lessons_completed", paid_engagement_in_first_week)))
+lessons_passed = average_engagement(total_engagement_dicts(engagement_dicts("lessons_completed", paid_engagement_in_first_week)))
 
+def hist_plotting(column_in_engagement, which_engagement, title):
+    data = (total_engagement_dicts(engagement_dicts(column_in_engagement, which_engagement))).values()
+    plt.figure() 
+    plt.hist(data)
+    plt.title(title)
+    plt.xlabel(column_in_engagement)
     
 
-
-         
-    
-
-
-
-
-        
-        
-        
-            
-
-          
-            
+#plotting the histograms
+hist_plotting("total_minutes_visited", passing_engagement, "students who passed the project")   
+hist_plotting("total_minutes_visited", non_passing_engagement, "students who didn't pass the project") 
+hist_plotting("lessons_completed", passing_engagement, "students who passed the project") 
+hist_plotting("lessons_completed", non_passing_engagement, "students who didn't pass the project")
+hist_plotting("day_visited", passing_engagement, "students who passed the project") 
+hist_plotting("day_visited", non_passing_engagement, "students who didn't pass the project")
+  
 
 print ("My program took {} seconds to run".format(time.time() - start_time))
