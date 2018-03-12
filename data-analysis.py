@@ -19,8 +19,6 @@ project_submissions = file_reader("project_submissions.csv")
 enrollments = file_reader("enrollments.csv")
 
 #to change the data types
-
-
 def change_time_type(date):
     if date == '':
         return None
@@ -102,6 +100,7 @@ for student in enrollments:
         test_accounts.add(student["account_key"])
 #print (test_accounts)
 
+
 #function to remove udacity test_accounts form the all tables
 def remove_test_accounts(table_name):
     new_table = []
@@ -127,13 +126,12 @@ for student in non_udacity_enrollments:
         elif student["join_date"] > paid_student[student["account_key"]]:
             paid_student[student["account_key"]] = student["join_date"]
 
-#add another column for the days that student has visited
+#add another column in engagement table for the days that student has visited
 for account in non_udacity_engagements:
     if account["num_courses_visited"]>0:
         account["day_visited"] = 1
     else:
         account["day_visited"] = 0      
-        
         
         
 #find dates within one week of a date 
@@ -142,18 +140,17 @@ def within_one_week(enrollment_date, engagement_date):
     if enrollment_date <= engagement_date < enrollment_date + margin:
         return True
         
-paid_engagement_in_first_week = []  #data from engagement tabel for duration of one week 
-                                    # where the student was a paid student 
+paid_engagement_in_first_week = []  
+#data from engagement tabel for duration of one week where the student was a paid student 
 for engagement in non_udacity_engagements:
     if engagement["account_key"] in paid_student.keys():
         if within_one_week(paid_student[engagement["account_key"]] ,engagement["utc_date"]):
             paid_engagement_in_first_week.append(engagement)
 #print (len(paid_engagement_in_first_week))
-            
-      
-            
+        
+    
+           
 #find average minutes spent in classroom during the first week of engagement with 3 functions
-
 def engagement_dicts(column_in_engagement):
     dict_name = {}
     for key in paid_student.keys():
@@ -185,14 +182,34 @@ def average_engagement(total_engagement_dict):
     standard_dev = np.std(total)
     minimum = np.min(total)
     maximum = np.max(total)
-    
     return ("%.2f"%average, "%.2f" %standard_dev, "%.2f" % minimum, "%.2f"% maximum)
 
 lessons_stats = average_engagement(total_lessons_dict)
 minutes_stats = average_engagement(total_minutes_dict)
 days_stats = average_engagement(total_days_dict)
 
+    
+account_key_paid_first_week = set()
+for student in paid_engagement_in_first_week:
+    account_key_paid_first_week.add(student["account_key"])
+    
+passing_engagement_accounts = set()
+for submission in non_udacity_submissions:
+    if submission["account_key"] in account_key_paid_first_week \
+    and submission["lesson_key"] in ["746169184", "3176718735"]:
+        if submission["assigned_rating"] in ["PASSED", "DISTINCTION"]:
+            passing_engagement_accounts.add(submission["account_key"])
+             
+passing_engagement = []
+non_passing_engagement = []
+for engagement in paid_engagement_in_first_week:
+    if engagement["account_key"] in passing_engagement_accounts:
+        passing_engagement.append(engagement)
+    elif engagement["account_key"] not in passing_engagement_accounts:
+        non_passing_engagement.append(engagement)
 
+         
+    
 
 
 
